@@ -28,13 +28,13 @@ html{scroll-behavior:smooth}body{background:var(--bg);color:var(--ink)}.wrap{wid
 :root[data-theme=light]{--bg:#F5F7FC;--panel:#FFFFFF;--ink:#17263C;--muted:#526782;--line:#DCE4F2;--accent:#376DE0}
 
 /* Router Murti — charcoal & emerald restoration */
-:root,:root[data-theme=dark]{--bg:#141A18;--panel:#1D2823;--ink:#F3F8F5;--muted:#B1C2B7;--line:#33473C;--accent:#49CBA0}
-:root[data-theme=light]{--bg:#F3F7F4;--panel:#FFFFFF;--ink:#192821;--muted:#52695B;--line:#D5E2D8;--accent:#218662}
-:root[data-theme=dark] body{background:#141A18}
-.v3-tool{background:linear-gradient(135deg,#17231D,#263D2F);border-color:#426D58;color:#F3F8F5}
-.v3-tool .v3-kicker{color:#8CE5BF}
-.v3-tool p{color:#D3E7DA}
-.v3-tool .btn{background:#49CBA0;color:#10251A}
+:root,:root[data-theme=dark]{--bg:#101B30;--panel:#182B47;--ink:#F3F7FF;--muted:#A8B9D4;--line:#344665;--accent:#538CFF}
+:root[data-theme=light]{--bg:#F5F7FC;--panel:#FFFFFF;--ink:#17263C;--muted:#526782;--line:#DCE4F2;--accent:#376DE0}
+:root[data-theme=dark] body{background:#101B30}
+.v3-tool{background:linear-gradient(135deg,#172C4E,#101B30);border-color:#344665;color:#F3F7FF}
+.v3-tool .v3-kicker{color:#83B2FF}
+.v3-tool p{color:#D5E2F5}
+.v3-tool .btn{background:#538CFF;color:#101B30}
 .v3-coin-wrap:before{border-color:var(--accent)}
 .rm-founder-top{display:flex;align-items:center;justify-content:space-between;text-align:left;gap:24px}
 .rm-founder-top>div:first-child{max-width:650px}
