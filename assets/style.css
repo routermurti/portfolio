@@ -64,3 +64,12 @@ footer .v3-footer{display:block;color:var(--muted)}
 /* Product attribution */
 .rm-created-by{text-align:center;font-size:.85rem;font-weight:650;letter-spacing:.04em;color:var(--muted);margin:8px 0 14px}.v3-tool .rm-created-by{color:var(--muted)}
 
+
+/* Slow blue-to-lime logo cycle; the source PNG and Limon stay unchanged. */
+img[src="assets/router-murti-logo.png"]{animation:rm-logo-color-cycle 18s ease-in-out infinite}
+.rm-check-logo{--rm-logo-shadow:drop-shadow(0 0 13px var(--glow-soft))}
+@keyframes rm-logo-color-cycle{
+  0%,100%{filter:hue-rotate(0deg) saturate(1) brightness(1) var(--rm-logo-shadow,drop-shadow(0 0 0 transparent))}
+  50%{filter:hue-rotate(-140deg) saturate(.6) brightness(1.55) var(--rm-logo-shadow,drop-shadow(0 0 0 transparent))}
+}
+@media(prefers-reduced-motion:reduce){img[src="assets/router-murti-logo.png"]{animation:none}}
