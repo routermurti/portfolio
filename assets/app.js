@@ -118,3 +118,186 @@ document.getElementById('theme').addEventListener('click', () => {
 });
 
 
+// ===== Ek arayüz katmanı: durum rozeti, yazma efekti, fare ışığı, Ctrl+K komut çubuğu =====
+const rmReduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+const rmExtras = {
+  statusOnline: { tr: 'Şu anda yeni proje taleplerine açığım', en: 'Currently open to new project requests', de: 'Momentan offen für neue Projektanfragen', es: 'Actualmente abierto a nuevos proyectos' },
+  themeLabel: { tr: 'Koyu / açık temayı değiştir', en: 'Toggle dark / light theme', de: 'Dunkles / helles Design umschalten', es: 'Cambiar tema oscuro / claro' },
+  searchHint: { tr: 'Sayfa, tema veya dil ara…', en: 'Search pages, theme or language…', de: 'Seiten, Design oder Sprache suchen…', es: 'Buscar páginas, tema o idioma…' },
+  footerHint: { tr: '↑ ↓ gezin · Enter onayla · Esc kapat', en: '↑ ↓ browse · Enter select · Esc close', de: '↑ ↓ navigieren · Enter auswählen · Esc schließen', es: '↑ ↓ navegar · Enter confirmar · Esc cerrar' }
+};
+for (const [rmKey, rmTexts] of Object.entries(rmExtras)) {
+  for (const rmCode of Object.keys(translations)) if (rmTexts[rmCode]) translations[rmCode][rmKey] = rmTexts[rmCode];
+}
+
+// Ana sayfa sloganı: bir kez yazma efekti; dil değişince düz metin kalır.
+const rmHeroH1 = document.querySelector('.v3-hero h1');
+if (rmHeroH1 && !rmReduceMotion) {
+  const rmFullText = rmHeroH1.textContent;
+  rmHeroH1.setAttribute('aria-label', rmFullText);
+  const rmCaret = document.createElement('span');
+  rmCaret.className = 'rm-caret';
+  rmCaret.setAttribute('aria-hidden', 'true');
+  let rmIndex = 0;
+  const rmType = () => {
+    rmHeroH1.textContent = rmFullText.slice(0, rmIndex);
+    rmHeroH1.append(rmCaret);
+    rmIndex += 1;
+    if (rmIndex <= rmFullText.length) setTimeout(rmType, 46);
+    else setTimeout(() => rmCaret.remove(), 3000);
+  };
+  setTimeout(rmType, 320);
+}
+
+// Fareyi yumuşakça izleyen vurgu ışığı; yalnızca gerçek fare/dokunmatik üstü aygıtta.
+if (window.matchMedia('(hover: hover) and (pointer: fine)').matches) {
+  const rmGlow = document.createElement('div');
+  rmGlow.id = 'rm-glow';
+  rmGlow.setAttribute('aria-hidden', 'true');
+  document.body.append(rmGlow);
+  if (rmReduceMotion) rmGlow.hidden = true;
+  else {
+    let rmX = window.innerWidth / 2, rmY = window.innerHeight / 3, rmAX = rmX, rmAY = rmY;
+    document.addEventListener('pointermove', (event) => {
+      rmX = event.clientX;
+      rmY = event.clientY;
+    }, { passive: true });
+    const rmPaint = () => {
+      rmAX += (rmX - rmAX) * 0.16;
+      rmAY += (rmY - rmAY) * 0.16;
+      rmGlow.style.transform = 'translate3d(' + (rmAX - 230) + 'px,' + (rmAY - 230) + 'px,0)';
+      requestAnimationFrame(rmPaint);
+    };
+    rmPaint();
+  }
+}
+
+// Ctrl+K (Mac'te Cmd+K) komut çubuğu: sayfalar, tema ve dil.
+(() => {
+  const rmPages = [
+    ['Ana Sayfa', 'index.html'],
+    ['Hizmetler', 'services.html'],
+    ['Portföy', 'portfolio.html'],
+    ['Süreç', 'process.html'],
+    ['Kod Merkezi', 'code-center.html'],
+    ['İletişim', 'contact.html']
+  ];
+  const rmLangs = [['tr', 'Türkçe (TR)'], ['en', 'English (EN)'], ['de', 'Deutsch (DE)'], ['es', 'Español (ES)']];
+  const rmOverlay = document.createElement('div');
+  rmOverlay.className = 'rm-cmdk';
+  rmOverlay.hidden = true;
+  rmOverlay.innerHTML = '<div class="rm-cmdk-panel" role="dialog" aria-modal="true" aria-label="Hızlı komut çubuğu"><input id="rmCmdkInput" type="text" autocomplete="off" spellcheck="false" aria-label="Arama"/><div class="rm-cmdk-list" role="listbox"></div><div class="rm-cmdk-note"></div></div>';
+  document.body.append(rmOverlay);
+
+  const rmInput = rmOverlay.querySelector('input');
+  const rmList = rmOverlay.querySelector('.rm-cmdk-list');
+  const rmNote = rmOverlay.querySelector('.rm-cmdk-note');
+  let rmItems = [];
+  let rmActive = 0;
+
+  function rmBuildItems() {
+    const t = translations[lang] || {};
+    const items = rmPages.map(([rmKey, rmHref]) => ({ label: t[rmKey] || rmKey, hint: '→', run: () => { location.href = rmHref; } }));
+    items.push({ label: t.themeLabel || 'Temayı değiştir', hint: '◐', run: () => { const rmThemeBtn = document.getElementById('theme'); if (rmThemeBtn) rmThemeBtn.click(); } });
+    for (const [rmCode, rmName] of rmLangs) {
+      items.push({
+        label: rmName,
+        hint: rmCode.toUpperCase(),
+        run: () => {
+          const rmSel = document.getElementById('lang');
+          if (rmSel) {
+            rmSel.value = rmCode;
+            rmSel.dispatchEvent(new Event('change'));
+          }
+        }
+      });
+    }
+    return items;
+  }
+
+  function rmRender(rmFilter) {
+    const rmQuery = String(rmFilter || '').trim().toLocaleLowerCase('tr');
+    rmItems = rmBuildItems().filter((rmItem) => !rmQuery || rmItem.label.toLocaleLowerCase('tr').includes(rmQuery));
+    if (rmActive >= rmItems.length) rmActive = 0;
+    rmList.replaceChildren(...rmItems.map((rmItem, rmIndex) => {
+      const rmEl = document.createElement('button');
+      rmEl.type = 'button';
+      rmEl.className = 'rm-cmdk-item';
+      rmEl.setAttribute('role', 'option');
+      rmEl.setAttribute('aria-selected', String(rmIndex === rmActive));
+      const rmLabel = document.createElement('span');
+      rmLabel.textContent = rmItem.label;
+      const rmHint = document.createElement('small');
+      rmHint.textContent = rmItem.hint;
+      rmEl.append(rmLabel, rmHint);
+      rmEl.addEventListener('click', () => {
+        rmClose();
+        rmItem.run();
+      });
+      return rmEl;
+    }));
+  }
+
+  function rmOpen() {
+    const t = translations[lang] || {};
+    rmOverlay.hidden = false;
+    rmInput.value = '';
+    rmActive = 0;
+    rmInput.placeholder = t.searchHint || '';
+    rmNote.textContent = t.footerHint || '';
+    rmRender('');
+    rmInput.focus();
+  }
+  function rmClose() {
+    rmOverlay.hidden = true;
+  }
+
+  document.addEventListener('keydown', (event) => {
+    if ((event.ctrlKey || event.metaKey) && String(event.key).toLowerCase() === 'k') {
+      event.preventDefault();
+      if (rmOverlay.hidden) rmOpen();
+      else rmClose();
+      return;
+    }
+    if (rmOverlay.hidden || !rmItems.length) return;
+    if (event.key === 'Escape') {
+      event.preventDefault();
+      rmClose();
+    } else if (event.key === 'ArrowDown') {
+      event.preventDefault();
+      rmActive = (rmActive + 1) % rmItems.length;
+      rmRender(rmInput.value);
+    } else if (event.key === 'ArrowUp') {
+      event.preventDefault();
+      rmActive = (rmActive - 1 + rmItems.length) % rmItems.length;
+      rmRender(rmInput.value);
+    } else if (event.key === 'Enter') {
+      event.preventDefault();
+      const rmChosen = rmItems[rmActive];
+      if (rmChosen) {
+        rmClose();
+        rmChosen.run();
+      }
+    }
+  });
+  rmInput.addEventListener('input', () => {
+    rmActive = 0;
+    rmRender(rmInput.value);
+  });
+  rmOverlay.addEventListener('mousedown', (event) => {
+    if (event.target === rmOverlay) rmClose();
+  });
+
+  const rmTools = document.querySelector('header .tools');
+  if (rmTools) {
+    const rmTrigger = document.createElement('button');
+    rmTrigger.type = 'button';
+    rmTrigger.className = 'rm-kbtn';
+    rmTrigger.textContent = /mac/i.test(navigator.platform || '') ? '⌘ K' : 'Ctrl K';
+    rmTrigger.setAttribute('aria-label', 'Hızlı komut çubuğunu aç (Ctrl+K)');
+    rmTrigger.addEventListener('click', rmOpen);
+    rmTools.append(rmTrigger);
+  }
+})();
+
