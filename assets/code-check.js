@@ -33,7 +33,7 @@
 
     if (categories.length) {
       const list = document.createElement('p');
-      list.textContent = 'Olası kategori: ' + categories.join(', ');
+      list.textContent = "Olası hassas bilgi türleri: " + categories.join(', ');
       resultBox.append(list);
     }
   }
@@ -74,15 +74,15 @@
       const file = $('rmFile').files && $('rmFile').files[0];
       if (!file) return { error: 'Bir HTML veya CSS dosyası seçin.' };
       if (file.size > 102400 || !/\.(html?|css)$/i.test(file.name)) {
-        return { error: 'Yalnızca 100 KB altındaki .html, .htm veya .css dosyalarını seçin.' };
+        return { error: "En fazla 100 KB boyutunda, .html, .htm veya .css uzantılı bir dosya seçin." };
       }
       let text;
       try {
         text = await file.text();
       } catch {
-        return { error: 'Dosya güvenli biçimde okunamadı.' };
+        return { error: "Dosya tarayıcı içinde okunamadı. Dosyanın erişilebilir bir metin dosyası olduğunu kontrol edin." };
       }
-      if (text.includes('\0')) return { error: 'İkili içerik desteklenmiyor.' };
+      if (text.includes('\0')) return { error: "Bu dosyanın içeriği metin olarak incelenemiyor. Bir HTML veya CSS metin dosyası seçin." };
       return { text, kind: /\.css$/i.test(file.name) ? 'css' : 'html', fileName: file.name };
     }
 
@@ -92,7 +92,7 @@
       if (!['https:', 'http:'].includes(parsed.protocol)) throw new Error('unsupported scheme');
       return { unsupported: true, rawUrl };
     } catch {
-      return { error: 'Geçerli bir HTTP/HTTPS adresi girin.' };
+      return { error: "http:// veya https:// ile başlayan geçerli bir site adresi girin." };
     }
   }
 
@@ -113,15 +113,15 @@
 
     const title = document.createElement('h2');
     title.className = 'rm-report-title';
-    title.textContent = data.unsupported ? 'Manuel Ön Analiz Öneriliyor' : 'Ön Kontrol Tamamlandı';
+    title.textContent = data.unsupported ? "Ayrıntılı inceleme gerekli" : "Ön kontrol tamamlandı";
     resultBox.append(title);
 
     const detail = document.createElement('p');
     detail.textContent = data.unsupported
-      ? 'Site adresi için otomatik değerlendirme etkin değil. Site taranmadı ve kodu alınmadı; bu, sitenin hatasız olduğu anlamına gelmez.'
+      ? "Bu sürüm, site adresi üzerinden otomatik inceleme yapmaz. Siteye bağlanılmadı ve kaynak kodu alınmadı. Bu nedenle sitenin hataları veya güvenliği hakkında değerlendirme yapılmış değildir."
       : data.count
-        ? 'Temel sözdizimi kontrolünde ' + data.count + ' olası sorun işareti görüldü. Bu sayı kesin hata sayısı değildir.'
-        : 'Temel kontrollerde belirgin bir sorun işareti bulunamadı. Bu, kodun hatasız olduğu anlamına gelmez.';
+        ? "Temel söz dizimi kontrolünde " + data.count + " olası bulgu saptandı. Bu sayı, kesinleşmiş hata sayısını göstermez; bulguların ayrıca incelenmesi gerekir."
+        : "Bu sınırlı ön kontrolde belirgin bir sorun belirtisi saptanmadı. Sonuç, kodun hatasız veya güvenli olduğunu göstermez; araç tüm hata türlerini denetlemez.";
     resultBox.append(detail);
 
     if (!data.unsupported) {
@@ -132,19 +132,19 @@
     }
 
     const note = document.createElement('p');
-    note.textContent = 'Kaynak kodu, dosya adı, site adresi ve sorun açıklaması WhatsApp mesajına otomatik eklenmez. Paylaşım yapmadan önce içeriği ayrıca gözden geçirin; bu yerel tarama gizli bilgi bulmayı garanti etmez.';
+    note.textContent = "WhatsApp için hazırlanan taslakta yalnızca genel ön kontrol özeti yer alır. Kaynak kodu, dosya adı, site adresi ve sorun açıklaması otomatik olarak eklenmez. Başka bir içerik paylaşacaksanız önce hassas bilgileri kaldırın; bu tarayıcı içi tarama, tüm gizli bilgileri bulmayı garanti etmez.";
     resultBox.append(note);
 
     const consentLabel = document.createElement('label');
     const consent = document.createElement('input');
     consent.type = 'checkbox';
-    consentLabel.append(consent, document.createTextNode(' Genel analiz özetini içeren WhatsApp mesajını açmayı onaylıyorum.'));
+    consentLabel.append(consent, document.createTextNode(" Genel ön kontrol özetini WhatsApp mesaj taslağı olarak açmayı onaylıyorum."));
     resultBox.append(consentLabel);
 
     const actions = document.createElement('div');
     actions.className = 'rm-report-actions';
     const link = document.createElement('a');
-    link.textContent = 'Genel özeti WhatsApp’ta aç';
+    link.textContent = "Genel özeti WhatsApp’ta aç";
     link.target = '_blank';
     link.rel = 'noopener noreferrer';
     link.href = '#';
@@ -154,9 +154,9 @@
 
     const message = [
       'Rm Smart Code Check v0.2.0',
-      'Manuel inceleme talebi',
-      'Ön kontrol: ' + (data.unsupported ? 'Site adresi için otomatik değerlendirme yapılmadı' : data.count + ' olası bulgu'),
-      'Kaynak içeriği ve sorun açıklamasını güvenli olduğunu kendim doğruladıktan sonra ayrıca paylaşacağım.'
+      "Ayrıntılı inceleme talebi",
+      'Ön kontrol: ' + (data.unsupported ? "Site adresi üzerinden otomatik inceleme yapılmadı" : data.count + ' olası bulgu'),
+      "Kaynak kodunu veya sorun açıklamasını paylaşmam gerekirse önce içerikte hassas bilgi bulunmadığını kendim kontrol edeceğim."
     ].join('\n\n');
 
     consent.addEventListener('change', () => {
@@ -183,15 +183,15 @@
       const mode = selectedMode();
       const source = await readSource(mode);
       if (source.error) {
-        renderMessage('Girdi kontrolü', source.error);
+        renderMessage("İçerik kontrolü", source.error);
         return;
       }
 
       const sensitiveCategories = window.RmSecurityScan.scan(getScannedInput(mode, source));
       if (sensitiveCategories.length) {
         renderMessage(
-          'Güvenlik Uyarısı — Analiz Durduruldu',
-          'Girdide hassas bilgi olabilecek bir işaret bulundu. Değerler bu ekranda gösterilmedi; içerik dışarı gönderilmedi veya sunucuya kaydedilmedi. Hassas bilgileri kaldırıp yeniden deneyin. Otomatik tarama her sırrı yakalayamayabilir.',
+          "Hassas bilgi uyarısı: İnceleme durduruldu",
+          "İçerikte hassas bilgi bulunabileceğini gösteren bir belirti saptandı. İlgili değerler ekranda gösterilmedi; içerik dışarı gönderilmedi ve sunucuya kaydedilmedi. Hassas bilgileri kaldırıp yeniden deneyin. Otomatik taramanın tüm hassas bilgileri bulamayabileceğini unutmayın.",
           sensitiveCategories
         );
         return;
@@ -204,7 +204,7 @@
 
       showReport(findSyntaxIssues(source.text, source.kind));
     } catch {
-      renderMessage('Analiz tamamlanamadı', 'Girdi yerel olarak işlenemedi. Hassas içerikler hata mesajına eklenmedi.');
+      renderMessage("Ön kontrol tamamlanamadı", "İçerik tarayıcı içinde işlenemedi. Hata mesajına kaynak kodu veya hassas bilgi eklenmedi.");
     } finally {
       updateButtonState();
     }
@@ -212,3 +212,4 @@
 
   refresh();
 })();
+
