@@ -26,3 +26,36 @@ html{scroll-behavior:smooth}body{background:var(--bg);color:var(--ink)}.wrap{wid
 /* Router Murti approved brand palette: midnight navy + electric blue */
 :root,:root[data-theme=dark]{--bg:#101B30;--panel:#182B47;--ink:#F3F7FF;--muted:#A8B9D4;--line:#344665;--accent:#538CFF}
 :root[data-theme=light]{--bg:#F5F7FC;--panel:#FFFFFF;--ink:#17263C;--muted:#526782;--line:#DCE4F2;--accent:#376DE0}
+
+/* Router Murti — charcoal & emerald restoration */
+:root,:root[data-theme=dark]{--bg:#141A18;--panel:#1D2823;--ink:#F3F8F5;--muted:#B1C2B7;--line:#33473C;--accent:#49CBA0}
+:root[data-theme=light]{--bg:#F3F7F4;--panel:#FFFFFF;--ink:#192821;--muted:#52695B;--line:#D5E2D8;--accent:#218662}
+:root[data-theme=dark] body{background:#141A18}
+.v3-tool{background:linear-gradient(135deg,#17231D,#263D2F);border-color:#426D58;color:#F3F8F5}
+.v3-tool .v3-kicker{color:#8CE5BF}
+.v3-tool p{color:#D3E7DA}
+.v3-tool .btn{background:#49CBA0;color:#10251A}
+.v3-coin-wrap:before{border-color:var(--accent)}
+.rm-founder-top{display:flex;align-items:center;justify-content:space-between;text-align:left;gap:24px}
+.rm-founder-top>div:first-child{max-width:650px}
+.rm-founder-top h2{margin:6px 0 12px}
+.rm-founder-counter{min-width:170px;padding:18px 20px;border:1px solid var(--line);border-radius:20px;background:var(--bg);text-align:center}
+.rm-founder-counter strong{display:block;font-size:2.7rem;line-height:1.15;color:var(--accent)}
+.rm-founder-counter strong small{font-size:1.1rem;color:var(--muted)}
+.rm-founder-counter span{font-size:.82rem;color:var(--muted)}
+.rm-founder-slots{display:grid;grid-template-columns:repeat(10,minmax(0,1fr));gap:10px;margin:28px 0}
+.rm-founder-slot{aspect-ratio:1/1;border:1px dashed var(--line);border-radius:16px;background:var(--bg);display:grid;place-items:center;position:relative}
+.rm-slot-icon{font-size:1.4rem;color:var(--accent);opacity:.45}
+.rm-founder-slot small{position:absolute;bottom:5px;right:8px;color:var(--muted);font-size:.65rem}
+.rm-founder-bottom{border-top:1px solid var(--line);padding-top:17px;display:flex;justify-content:space-between;gap:18px;align-items:center;text-align:left;color:var(--muted);font-size:.9rem}
+.rm-founder-bottom a{white-space:nowrap;color:var(--accent);font-weight:750}
+footer .wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;text-align:center;gap:4px}
+footer .wrap strong{font-size:1.08rem;font-weight:900}
+footer .v3-footer{display:block;color:var(--muted)}
+.v3-box{min-height:220px;display:flex;flex-direction:column;justify-content:flex-start}
+.v3-box .v3-pill{align-self:flex-start}
+.v3-box p{line-height:1.75}
+.v3-projects article{min-height:245px}
+.v3-projects p{line-height:1.75}
+@media(max-width:800px){.rm-founder-top{flex-direction:column;text-align:center}.rm-founder-counter{width:100%}.rm-founder-slots{grid-template-columns:repeat(5,1fr)}.rm-founder-bottom{flex-direction:column;text-align:center}}
+@media(max-width:420px){.rm-founder-slots{grid-template-columns:repeat(5,1fr);gap:6px}.rm-founder-slot{border-radius:10px}}
