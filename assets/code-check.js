@@ -153,7 +153,7 @@
     link.setAttribute('aria-disabled', 'true');
 
     const message = [
-      'Rm Smart Code Check v0.2.0',
+      'Smart Code Check v0.2.0',
       "Ayrıntılı inceleme talebi",
       'Ön kontrol: ' + (data.unsupported ? "Site adresi üzerinden otomatik inceleme yapılmadı" : data.count + ' olası bulgu'),
       "Kaynak kodunu veya sorun açıklamasını paylaşmam gerekirse önce içerikte hassas bilgi bulunmadığını kendim kontrol edeceğim."
