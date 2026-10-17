@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="Router Murti — HTML/CSS düzenleme ve kod ön inceleme hizmetleri.">
+  <title>Router Murti | Kod Merkezi</title>
+  <link rel="icon" type="image/svg+xml" href="assets/favicon.svg">
+  <meta name="theme-color" content="#101B30">
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; connect-src 'none'; object-src 'none'; base-uri 'none'; form-action 'self'">
+  <link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+  <header>
+    <div class="wrap nav">
+      <a class="brand" href="index.html" aria-label="Router Murti ana sayfa">
+        <img src="assets/logo.svg" alt="" width="38" height="38">
+        <span class="brand-name">ROUTER <span>MURTI</span></span>
+      </a>
+      <nav aria-label="Ana menü">
+        <a href="index.html" data-i18n="Ana Sayfa">Ana Sayfa</a>
+        <a href="services.html" data-i18n="Hizmetler">Hizmetler</a>
+        <a href="portfolio.html" data-i18n="Portföy">Portföy</a>
+        <a href="process.html" data-i18n="Süreç">Süreç</a>
+        <a href="code-center.html" aria-current="page" data-i18n="Kod Merkezi">Kod Merkezi</a>
+        <a href="contact.html" data-i18n="İletişim">İletişim</a>
+      </nav>
+      <div class="tools">
+        <select id="lang" aria-label="Dil seçimi">
+          <option value="tr">TR</option><option value="en">EN</option><option value="de">DE</option><option value="es">ES</option>
+        </select>
+        <button id="theme" type="button" aria-label="Açık/koyu tema">◐</button>
+      </div>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="rm-check-hero">
+      <img class="rm-check-logo" src="assets/logo.svg" alt="Router Murti logosu" width="104" height="104">
+      <h1>Rm Smart Code Check <span class="rm-version">v0.2.0</span></h1>
+      <p class="rm-check-sub">Ön Analiz ve Müşteri Bilgilendirme Motoru</p>
+      <p class="muted">HTML/CSS kodunuzda temel sözdizimi sorunlarını kontrol edin. Sonuç kesin hata teşhisi değildir.</p>
+    </section>
+
+    <section class="card rm-check-panel">
+      <form id="rmAnalysisForm">
+        <fieldset class="rm-tabs">
+          <legend>Ne incelemek istersiniz?</legend>
+          <label><input type="radio" name="sourceType" value="code" checked> Kod yapıştır</label>
+          <label><input type="radio" name="sourceType" value="file"> Dosya seç</label>
+          <label><input type="radio" name="sourceType" value="url"> Site URL</label>
+        </fieldset>
+
+        <div id="rmCodePane">
+          <label for="rmCodeType">Kod türü</label>
+          <select id="rmCodeType"><option value="html">HTML</option><option value="css">CSS</option></select>
+          <label for="rmCode">Kod</label>
+          <textarea id="rmCode" maxlength="100000" rows="9" spellcheck="false" autocomplete="off" placeholder="HTML veya CSS kodunuzu buraya yapıştırın"></textarea>
+        </div>
+
+        <div id="rmFilePane" hidden>
+          <label for="rmFile">HTML / CSS dosyası (en fazla 100 KB)</label>
+          <input type="file" id="rmFile" accept=".html,.htm,.css,text/html,text/css">
+          <p class="muted">Dosya bu tarayıcıda metin olarak okunur; çalıştırılmaz ve sunucuya yüklenmez.</p>
+        </div>
+
+        <div id="rmUrlPane" hidden>
+          <label for="rmUrl">Site adresi</label>
+          <input id="rmUrl" type="url" maxlength="2048" autocomplete="url" placeholder="https://ornek.com">
+          <p class="muted">URL üzerinden otomatik analiz etkin değil. Adres alınmaz veya taranmaz; yalnızca yerel biçim ve hassas bilgi kontrolü yapılır.</p>
+        </div>
+
+        <label for="rmProblem">Sorunun kısa açıklaması</label>
+        <textarea id="rmProblem" maxlength="1000" rows="3" autocomplete="off" placeholder="Ne çalışmıyor? Nasıl görünmesini istiyorsunuz?"></textarea>
+        <label class="rm-consent">
+          <input type="checkbox" id="rmSafeConsent" required>
+          Paylaştığım alanlarda şifre, API anahtarı, erişim belirteci veya özel müşteri verisi bulunmadığını kontrol ettim. Otomatik tarama ek bir kontroldür; kesin garanti değildir.
+        </label>
+        <button type="submit" class="rm-analyze-btn" id="rmAnalyzeBtn" disabled>◈ &nbsp; ÖN ANALİZİ BAŞLAT <span aria-hidden="true">→</span></button>
+        <p class="muted rm-hint">Kod veya dosya çalıştırılmaz, sunucuya yüklenmez ve sonuçta saklanmaz. Gizli bilgi bulma taraması kusursuz değildir. WhatsApp mesajına yalnızca genel analiz özeti eklenir; gönderme işlemini siz yaparsınız.</p>
+      </form>
+      <div id="rmAnalysisResult" class="result" hidden role="status" aria-live="polite"></div>
+    </section>
+  </main>
+
+  <footer><div class="wrap">© Router Murti · Kişisel freelance portföy · Gerçek müşteri referansı sunulmaz.</div></footer>
+  <script src="assets/app.js" defer></script>
+  <script src="assets/security-scan.js" defer></script>
+  <script src="assets/syntax-check.js" defer></script>
+  <script src="assets/code-check.js" defer></script>
+</body>
+</html>
