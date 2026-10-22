@@ -46,7 +46,7 @@
     link.className = 'is-disabled'; link.tabIndex = -1; link.setAttribute('aria-disabled', 'true');
     const summary = ['Smart Code Check v0.2.0', t('requestReview'), data.unsupported ? t('urlInfo') : t(metricKey, { count: data.count })].join('\n\n');
     consent.addEventListener('change', () => {
-      link.href = consent.checked ? 'https://wa.me/905520661318?text=' + encodeURIComponent(summary) : '#';
+      link.href = consent.checked ? 'https://t.me/routermurti?text=' + encodeURIComponent(summary) : '#';
       link.className = consent.checked ? '' : 'is-disabled'; link.tabIndex = consent.checked ? 0 : -1;
       link.setAttribute('aria-disabled', String(!consent.checked));
     });
