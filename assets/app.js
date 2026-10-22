@@ -40,10 +40,10 @@
   applyLanguage();
 
   const foundersCopy = {
-    tr: { title: 'İlk 50 İş Ortağım', note: 'İlk 50 iş ortağım için ayrılan alanı görüntüle', empty: 'Henüz yayımlanan isim yok', message: 'Şimdilik bu liste boş; demek ki önce düğmeyi koyup ortakları beklemeye başlamışım. 🙂', cta: 'İlkler arasında yer almak için Telegram’dan yaz ↗' },
-    en: { title: 'My first 50 partners', note: 'A reserved space for my first 50 partners', empty: 'No names published yet', message: 'This list is empty for now; apparently I put up the button before finding my partners. 🙂', cta: 'Message me on Telegram to be among the first ↗' },
-    de: { title: 'Meine ersten 50 Partner', note: 'Ein reservierter Bereich für meine ersten 50 Partner', empty: 'Noch keine Namen veröffentlicht', message: 'Diese Liste ist noch leer; offenbar habe ich den Knopf vor meinen Partnern aufgestellt. 🙂', cta: 'Schreib mir auf Telegram und sei unter den Ersten ↗' },
-    es: { title: 'Mis primeros 50 socios', note: 'Un espacio reservado para mis primeros 50 socios', empty: 'Todavía no hay nombres publicados', message: 'La lista está vacía por ahora; parece que puse el botón antes de encontrar a mis socios. 🙂', cta: 'Escríbeme por Telegram para estar entre los primeros ↗' }
+    tr: { title: 'İlk 50 İş Ortağım', note: 'İlk 50 iş ortağım için ayrılan alanı görüntüle', empty: 'Henüz yayımlanan isim yok', message: 'Şimdilik ortaklık koltuğu boş. Ben düğmeyi koydum, sıra sende 🙂', cta: 'Ortak arıyorum 🙂 İlk sen ol — yaz ↗' },
+    en: { title: 'My first 50 partners', note: 'A reserved space for my first 50 partners', empty: 'No names published yet', message: 'The partner seat is still empty. I set up the button; now it is your turn 🙂', cta: 'Looking for a partner 🙂 Be first — write ↗' },
+    de: { title: 'Meine ersten 50 Partner', note: 'Ein reservierter Bereich für meine ersten 50 Partner', empty: 'Noch keine Namen veröffentlicht', message: 'Der Partnerplatz ist noch frei. Den Knopf habe ich schon aufgestellt; jetzt bist du dran 🙂', cta: 'Partner gesucht 🙂 Sei der Erste — schreib mir ↗' },
+    es: { title: 'Mis primeros 50 socios', note: 'Un espacio reservado para mis primeros 50 socios', empty: 'Todavía no hay nombres publicados', message: 'El puesto de socio sigue libre. Yo puse el botón; ahora te toca a ti 🙂', cta: 'Busco socio 🙂 Sé el primero — escribe ↗' }
   };
   function updateFoundersDock() {
     const dock = document.querySelector('.founders-dock');
