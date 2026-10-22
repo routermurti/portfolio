@@ -39,6 +39,26 @@
   if (savedTheme === 'light') document.querySelector('meta[name="theme-color"]')?.setAttribute('content', '#F1F5E9');
   applyLanguage();
 
+  const foundersCopy = {
+    tr: { title: 'İlk 50 İş Ortağım', note: 'İlk 50 iş ortağım için ayrılan alanı görüntüle', empty: 'Henüz yayımlanan isim yok', message: 'Şimdilik bu liste boş; demek ki önce düğmeyi koyup ortakları beklemeye başlamışım. 🙂', cta: 'İlkler arasında yer almak için Telegram’dan yaz ↗' },
+    en: { title: 'My first 50 partners', note: 'A reserved space for my first 50 partners', empty: 'No names published yet', message: 'This list is empty for now; apparently I put up the button before finding my partners. 🙂', cta: 'Message me on Telegram to be among the first ↗' },
+    de: { title: 'Meine ersten 50 Partner', note: 'Ein reservierter Bereich für meine ersten 50 Partner', empty: 'Noch keine Namen veröffentlicht', message: 'Diese Liste ist noch leer; offenbar habe ich den Knopf vor meinen Partnern aufgestellt. 🙂', cta: 'Schreib mir auf Telegram und sei unter den Ersten ↗' },
+    es: { title: 'Mis primeros 50 socios', note: 'Un espacio reservado para mis primeros 50 socios', empty: 'Todavía no hay nombres publicados', message: 'La lista está vacía por ahora; parece que puse el botón antes de encontrar a mis socios. 🙂', cta: 'Escríbeme por Telegram para estar entre los primeros ↗' }
+  };
+  function updateFoundersDock() {
+    const dock = document.querySelector('.founders-dock');
+    if (!dock) return;
+    const copy = foundersCopy[language] || foundersCopy.tr;
+    dock.querySelectorAll('[data-i18n="x.foundDock"]').forEach(el => { el.textContent = copy.title; });
+    const note = dock.querySelector('[data-i18n="x.foundDockNote"]'); if (note) note.textContent = copy.note;
+    const empty = dock.querySelector('.founders-dock-kicker'); if (empty) empty.textContent = copy.empty;
+    const message = dock.querySelector('.founders-dock-message'); if (message) message.textContent = copy.message;
+    const cta = dock.querySelector('[data-i18n="x.openFounders"]');
+    if (cta) { cta.textContent = copy.cta; cta.href = 'https://t.me/routermurti'; cta.target = '_blank'; cta.rel = 'noopener noreferrer'; }
+  }
+  updateFoundersDock();
+  document.addEventListener('rm:language', updateFoundersDock);
+
   const menu = document.querySelector('[data-menu]');
   const nav = document.getElementById('main-nav');
   function closeMenu() { nav?.classList.remove('is-open'); menu?.setAttribute('aria-expanded', 'false'); }
