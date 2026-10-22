@@ -1,27 +1,23 @@
-// Project request is composed locally and sent only after the visitor confirms in WhatsApp.
-const projectForm = document.getElementById('project-request');
-if (projectForm) projectForm.addEventListener('submit', (event) => {
-  event.preventDefault();
-  if (!projectForm.reportValidity()) return;
-  const details = document.getElementById('request-detail').value.trim();
-  if (details.length < 10) return;
-  const flagged = window.RmSecurityScan ? window.RmSecurityScan.scan(details) : ["Hassas bilgi taraması kullanılamıyor"];
-  if (flagged.length) {
-    document.getElementById('request-error').textContent = "Açıklamada hassas bilgi bulunabileceği saptandı veya hassas bilgi taraması kullanılamıyor. Özel bilgileri kaldırıp yeniden deneyin. WhatsApp mesaj taslağı açılmadı.";
-    return;
-  }
-  document.getElementById('request-error').textContent = '';
-  const category = document.getElementById('request-category');
-  const scope = document.getElementById('request-scope');
-  const turkish = document.documentElement.lang === 'tr';
-  const message = [
-    'Merhaba Router Murti,',
-    (turkish ? "Hizmet: " : 'Hizmet / Service: ') + category.options[category.selectedIndex].text,
-    (turkish ? "Proje kapsamı: " : 'Kapsam / Scope: ') + scope.options[scope.selectedIndex].text,
-    (turkish ? "Proje açıklaması:" : 'Talep / Request:'), details
-  ].join('\n');
-  const target = 'https://wa.me/905520661318?text=' + encodeURIComponent(message);
-  const opened = window.open(target, '_blank', 'noopener,noreferrer');
-  if (!opened) document.getElementById('request-error').textContent = "WhatsApp penceresi açılmamış olabilir. Açılmadıysa tarayıcınızın açılır pencere izinlerini kontrol edin. Bu form, mesajı kendiliğinden göndermez.";
-});
-
+(() => {
+  'use strict';
+  const form = document.getElementById('project-request');
+  if (!form || !window.RmUi) return;
+  const t = window.RmUi.t;
+  const error = document.getElementById('request-error');
+  document.addEventListener('rm:language', () => { error.replaceChildren(); });
+  form.addEventListener('input', () => { error.replaceChildren(); });
+  form.addEventListener('submit', event => {
+    event.preventDefault();
+    if (!form.reportValidity()) return;
+    const detail = document.getElementById('request-detail').value.trim();
+    if (detail.length < 10) return;
+    const flagged = window.RmSecurityScan?.scan(detail);
+    if (!flagged || flagged.length) { error.textContent = t('contactBlocked'); return; }
+    const category = document.getElementById('request-category'), scope = document.getElementById('request-scope');
+    const message = [t('greeting'), t('serviceMessage') + category.options[category.selectedIndex].text, t('scopeMessage') + scope.options[scope.selectedIndex].text, t('detailMessage'), detail].join('\n');
+    const target = 'https://wa.me/905520661318?text=' + encodeURIComponent(message);
+    window.open(target, '_blank', 'noopener,noreferrer');
+    error.textContent = t('contactFallback') + ' ';
+    const fallback = document.createElement('a'); fallback.href = target; fallback.target = '_blank'; fallback.rel = 'noopener noreferrer'; fallback.textContent = t('contactOpen'); error.append(fallback);
+  });
+})();
