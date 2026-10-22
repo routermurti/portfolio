@@ -37,5 +37,6 @@
     }
     return { lines, count };
   }
-  window.RmSyntaxCheck = Object.freeze({ check });
+  globalThis.RmSyntaxCheck = Object.freeze({ check });
 })();
+

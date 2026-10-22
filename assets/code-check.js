@@ -5,6 +5,8 @@
   const t = window.RmUi.t, $ = id => document.getElementById(id);
   const result = $('rmAnalysisResult'), button = $('rmAnalyzeBtn');
   let revision = 0, busy = false;
+  const workerUrl = new URL('analysis-worker.js?v=security-20261022', document.currentScript.src);
+  let cancelAnalysis = null;
   const mode = () => form.querySelector('input[name="sourceType"]:checked')?.value || 'code';
   function updateButton() {
     const selected = mode();
@@ -13,7 +15,12 @@
   }
   function refresh() {
     revision++;
-    ['code', 'file', 'url'].forEach(name => { $({ code: 'rmCodePane', file: 'rmFilePane', url: 'rmUrlPane' }[name]).hidden = name !== mode(); });
+    cancelAnalysis?.();
+    ['code', 'file', 'url'].forEach(name => {
+      const pane = $({ code: 'rmCodePane', file: 'rmFilePane', url: 'rmUrlPane' }[name]);
+      pane.hidden = name !== mode();
+      pane.querySelectorAll('input, textarea, select, button').forEach(control => { control.disabled = pane.hidden; });
+    });
     result.hidden = true; result.replaceChildren(); updateButton();
   }
   form.addEventListener('input', refresh); form.addEventListener('change', refresh);
@@ -71,6 +78,24 @@
     try { const url = new URL(rawUrl); return ['http:', 'https:'].includes(url.protocol) ? { unsupported: true, rawUrl } : { error: t('invalidUrl') }; }
     catch { return { error: t('invalidUrl') }; }
   }
+  function analyze(source, problem) {
+    return new Promise((resolve, reject) => {
+      const worker = new Worker(workerUrl);
+      let timer;
+      const finish = (error, data) => {
+        clearTimeout(timer); worker.terminate(); cancelAnalysis = null;
+        error ? reject(error) : resolve(data);
+      };
+      cancelAnalysis = () => finish(new Error('Analysis cancelled'));
+      timer = setTimeout(() => finish(new Error('Analysis timed out')), 5000);
+      worker.onerror = () => finish(new Error('Analysis failed'));
+      worker.onmessage = event => {
+        if (event.data?.error) finish(new Error('Analysis failed'));
+        else finish(null, event.data);
+      };
+      worker.postMessage({ source, problem });
+    });
+  }
   form.addEventListener('submit', async event => {
     event.preventDefault(); if (button.disabled) return;
     const version = revision, selected = mode(), problem = $('rmProblem').value;
@@ -79,12 +104,15 @@
       const source = await readSource(selected);
       if (version !== revision) return;
       if (source.error) { message(t('inputError'), source.error); return; }
-      const sensitive = window.RmSecurityScan.scan([problem, source.text, source.fileName, source.rawUrl].filter(Boolean).join('\n'));
+      const analysis = await analyze(source, problem);
+      if (version !== revision) return;
+      const sensitive = analysis.sensitive;
       if (sensitive.length) { message(t('sensitiveTitle'), t('sensitiveBody'), sensitive); return; }
       if (source.unsupported) { report({ unsupported: true }); return; }
-      report(window.RmSyntaxCheck.check(source.text, source.kind));
+      report(analysis.syntax);
     } catch { if (version === revision) message(t('scanFailed'), t('scanFailedBody')); }
     finally { busy = false; updateButton(); }
   });
   refresh();
 })();
+
